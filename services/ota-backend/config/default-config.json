@@ -1,0 +1,14 @@
+{
+  "device_id": "vw-ivi-0026",
+  "collector_url": "",
+  "region": {"country": "DE", "city": "Düsseldorf", "timezone": "Europe/Berlin"},
+  "power": {"source": "BATTERY", "battery_pct": 85},
+  "network": {"rssi_dbm": -55, "latency_ms": 373},
+  "ota_log_dir": "/data/log/ota",
+  "bundle_dir": "/data/ota",
+  "download_retries": 3,
+  "download_timeout_sec": 30,
+  "collector_flush_interval_sec": 30,
+  "reboot_after_apply": false,
+  "mark_good_on_commit": true
+}

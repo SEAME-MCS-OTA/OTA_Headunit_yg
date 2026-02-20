@@ -1,0 +1,12 @@
+[Unit]
+Description=Seat management daemon
+After=systemd-user-sessions.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/seatd -g video
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

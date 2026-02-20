@@ -1,0 +1,15 @@
+[Unit]
+Description=OTA Backend Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=PYTHONUNBUFFERED=1
+ExecStartPre=/bin/mkdir -p /data/log/ota /data/ota
+ExecStart=/usr/bin/ota-backend
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

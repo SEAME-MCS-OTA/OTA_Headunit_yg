@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Navigation</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #0e1116;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    #frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #0e1116;
+    }
+
+    #status {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #d5dbe6;
+      font-size: 13px;
+      z-index: 20;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="status">Loading map iframe...</div>
+  <iframe id="frame" allowfullscreen loading="eager" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+  <script>
+    (function () {
+      function clamp(v, lo, hi) {
+        return Math.max(lo, Math.min(hi, v));
+      }
+
+      function parseHash() {
+        var raw = location.hash ? location.hash.slice(1) : "";
+        var out = {};
+        if (!raw) return out;
+        raw.split("&").forEach(function (pair) {
+          var i = pair.indexOf("=");
+          if (i < 0) return;
+          out[decodeURIComponent(pair.slice(0, i))] = decodeURIComponent(pair.slice(i + 1));
+        });
+        return out;
+      }
+
+      var p = parseHash();
+      var lat = clamp(parseFloat(p.lat || "37.5665") || 37.5665, -85.0, 85.0);
+      var lon = clamp(parseFloat(p.lon || "126.9780") || 126.9780, -180.0, 180.0);
+      var z = clamp(parseInt(p.z || "13", 10) || 13, 3, 18);
+
+      var statusEl = document.getElementById("status");
+      var frame = document.getElementById("frame");
+      var src = "https://www.google.com/maps?q=" +
+        lat.toFixed(6) + "," + lon.toFixed(6) +
+        "&z=" + z + "&output=embed";
+
+      frame.onload = function () {
+        statusEl.style.display = "none";
+      };
+      frame.onerror = function () {
+        statusEl.textContent = "Map iframe failed to load";
+      };
+
+      setTimeout(function () {
+        if (statusEl.style.display !== "none") {
+          statusEl.textContent = "Map iframe loading... (check internet)";
+        }
+      }, 7000);
+
+      frame.src = src;
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+[Unit]
+Description=Head Unit UI
+After=weston.service
+Requires=weston.service
+Wants=http-time-sync.service systemd-timesyncd.service
+
+[Service]
+Type=simple
+Environment=QT_QPA_PLATFORM=wayland
+Environment=XDG_RUNTIME_DIR=/run/weston
+Environment=LANG=C.UTF-8
+Environment=LC_ALL=C.UTF-8
+Environment=TZ=CET-1CEST,M3.5.0,M10.5.0/3
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 50); do ls /run/weston/wayland-* >/dev/null 2>&1 && exit 0; sleep 0.1; done; exit 1'
+ExecStart=/bin/sh -c 'sock=$(ls /run/weston/wayland-* 2>/dev/null | head -n1); [ -n "$sock" ] || exit 1; export WAYLAND_DISPLAY=$(basename "$sock"); exec /usr/bin/headunit-ui'
+Restart=on-failure
+RestartSec=2
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

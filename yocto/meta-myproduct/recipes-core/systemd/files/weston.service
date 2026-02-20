@@ -1,0 +1,18 @@
+[Unit]
+Description=Weston Wayland Compositor
+After=systemd-user-sessions.service seatd.service
+Requires=seatd.service
+Conflicts=getty@tty1.service
+
+[Service]
+Type=simple
+Environment=XDG_RUNTIME_DIR=/run/weston
+Environment=LIBSEAT_BACKEND=seatd
+RuntimeDirectory=weston
+ExecStart=/usr/bin/weston --backend=drm-backend.so --config=/etc/xdg/weston/weston.ini --log=/run/weston/weston.log
+User=root
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

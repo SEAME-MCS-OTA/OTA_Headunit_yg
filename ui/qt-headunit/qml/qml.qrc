@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="/">
+    <file>Main.qml</file>
+    <file>pages/HomePage.qml</file>
+    <file>pages/OtaPage.qml</file>
+    <file>pages/NavPage.qml</file>
+    <file>pages/NavMapView.html</file>
+    <file>pages/MediaPage.qml</file>
+    <file>pages/MediaYoutubeWebView.qml</file>
+    <file>components/SimpleButton.qml</file>
+    <file>components/SimpleInput.qml</file>
+    <file>services/OtaApi.js</file>
+  </qresource>
+</RCC>

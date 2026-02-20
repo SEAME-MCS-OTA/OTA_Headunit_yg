@@ -1,0 +1,36 @@
+# Local caches and build outputs
+.cache/
+.claude/
+_cache/
+_build/
+out/
+
+# Yocto generated state
+yocto/build/
+yocto/sources/
+
+# Common artifacts
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python/node local env
+.venv/
+venv/
+node_modules/
+
+# Image outputs
+*.wic
+*.wic.bz2
+*.img
+*.ext4
+*.manifest
+*.bmap

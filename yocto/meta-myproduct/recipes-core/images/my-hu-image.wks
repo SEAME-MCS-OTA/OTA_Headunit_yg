@@ -1,0 +1,4 @@
+part /boot --source bootimg-partition --fstype=vfat --label boot --size 256M
+part / --source rootfs --fstype=ext4 --label rootfsA --size 2048M --align 4096
+part / --source rootfs --fstype=ext4 --label rootfsB --size 2048M --align 4096
+part /data --source rootfs --fstype=ext4 --label data --size 1024M

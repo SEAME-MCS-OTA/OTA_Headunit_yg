@@ -1,0 +1,42 @@
+MACHINE = "raspberrypi4-64"
+DISTRO = "myproduct"
+
+DL_DIR ?= "/work/.cache/downloads"
+SSTATE_DIR ?= "/work/.cache/sstate"
+
+
+VIRTUAL-RUNTIME_init_manager = "systemd"
+DISTRO_FEATURES:append = " systemd wayland opengl pam usrmerge"
+DISTRO_FEATURES:append = " rauc"
+DISTRO_FEATURES:remove = " x11 sysvinit"
+
+IMAGE_FEATURES += "ssh-server-openssh"
+
+# Accept firmware license for rpi wireless (demo)
+LICENSE_FLAGS_ACCEPTED += "synaptics-killswitch"
+
+# Disable custom RAUC config during boot-only bringup
+BBMASK += "meta-myproduct/recipes-support/rauc/rauc-conf.bb"
+# Keep weston-service enabled so weston/headunit auto-start on boot.
+
+# RPi4 boot (demo, no U-Boot)
+RPI_USE_U_BOOT = "0"
+ENABLE_UART = "1"
+RPI_EXTRA_CONFIG:append = " \n\
+dtoverlay=vc4-kms-v3d\n\
+gpu_mem=128\n\
+disable_overscan=1\n\
+hdmi_force_hotplug=1\n\
+"
+
+# RAUC
+RAUC_KEY_FILE = "/work/keys/rauc.key.pem"
+RAUC_CERT_FILE = "/work/keys/rauc.cert.pem"
+RAUC_BUNDLE_COMPATIBLE = "ivi-hu-rpi4"
+
+IMAGE_FSTYPES += "wic.gz"
+WKS_FILE = "my-hu-image.wks"
+
+# External sources for modular development
+EXTERNALSRC:pn-ota-backend = "/work/services/ota-backend"
+EXTERNALSRC:pn-headunit-ui = "/work/ui/qt-headunit"

@@ -1,0 +1,19 @@
+services:
+  yocto:
+    build: .
+    image: ivihub-yocto:22.04
+    container_name: ivihub-yocto
+    user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      - DL_DIR=/work/.cache/downloads
+      - SSTATE_DIR=/work/.cache/sstate
+      - YOCTO_DIR=/work/yocto
+      - ARTIFACTS_DIR=/work/out
+    volumes:
+      - ./:/work
+      - ./_cache/downloads:/work/.cache/downloads
+      - ./_cache/sstate:/work/.cache/sstate
+      - ./_build:/work/yocto/build
+      - ./out:/work/out
+    working_dir: /work
+    tty: true

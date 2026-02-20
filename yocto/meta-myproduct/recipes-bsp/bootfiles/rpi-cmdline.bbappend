@@ -1,0 +1,1 @@
+CMDLINE = "dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait net.ifnames=0 loglevel=7 systemd.log_level=debug systemd.show_status=1 plymouth.enable=0"

@@ -1,0 +1,10 @@
+[Unit]
+Description=Periodic UI bringup log collection
+
+[Timer]
+OnBootSec=25s
+OnUnitActiveSec=90s
+Unit=ui-log-collector.service
+
+[Install]
+WantedBy=timers.target

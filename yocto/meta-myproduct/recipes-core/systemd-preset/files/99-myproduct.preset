@@ -1,0 +1,12 @@
+# Enable compositor + app on boot
+enable seatd.service
+enable weston.service
+enable headunit.service
+enable ui-log-collector.service
+enable ui-log-collector.timer
+enable sshd.service
+enable wpa_supplicant@wlan0.service
+enable dhcpcd.service
+enable systemd-timesyncd.service
+enable http-time-sync.service
+disable getty@tty1.service

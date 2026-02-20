@@ -1,0 +1,11 @@
+[Unit]
+Description=One-shot HTTP time sync (no RTC fallback)
+After=weston.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/http-time-sync.sh
+
+[Install]
+WantedBy=multi-user.target

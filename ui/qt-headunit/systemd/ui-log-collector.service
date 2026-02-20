@@ -1,0 +1,12 @@
+[Unit]
+Description=Collect UI bringup logs
+After=local-fs.target weston.service network-online.target
+Wants=weston.service network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/headunit-ui/collect-ui-logs.sh
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target

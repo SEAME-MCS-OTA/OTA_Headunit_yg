@@ -403,5 +403,4 @@ Installed on target as:
 ## Known Limits
 
 - Raspberry Pi firmware does not provide built-in RAUC A/B boot decision logic.
-- Media and map experience depends on network/time/GPU environment.
-- Some changes can appear to work when patched directly on SD card but are lost unless committed to Yocto build inputs.
+

@@ -390,10 +390,14 @@ Default Wi-Fi profile is baked into Yocto through:
 
 - `yocto/meta-myproduct/recipes-connectivity/wpa-supplicant/files/wpa_supplicant.conf`
 
-Current default network:
+The repository uses placeholder credentials by default:
 
-- SSID: `SEA:ME WiFi Access`
-- Password: `1fy0u534m3`
+- SSID: `YOUR_WIFI_SSID`
+- Password: `YOUR_WIFI_PASSWORD`
+
+Before building, set your real Wi-Fi credentials in:
+
+- `yocto/meta-myproduct/recipes-connectivity/wpa-supplicant/files/wpa_supplicant.conf`
 
 Installed on target as:
 

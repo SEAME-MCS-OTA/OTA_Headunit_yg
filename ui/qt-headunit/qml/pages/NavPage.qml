@@ -7,13 +7,16 @@ import "../components"
 Rectangle {
     id: root
     anchors.fill: parent
-    color: "#0E1116"
+    color: "transparent"
+
+    Id5Theme { id: theme }
 
     signal back()
 
     property int zoom: 13
-    property real centerLat: 37.5665
-    property real centerLon: 126.9780
+    // Force navigation default to Wolfsburg, DE.
+    property real centerLat: 52.4227
+    property real centerLon: 10.7865
     property string pageTitle: "Navigation"
     property int mapEpoch: 0
     property string lastLoadError: ""
@@ -44,10 +47,20 @@ Rectangle {
     Component.onCompleted: openMap(centerLat, centerLon, zoom)
 
     Rectangle {
+        anchors.fill: parent
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: theme.bgTop }
+            GradientStop { position: 1.0; color: theme.bgBottom }
+        }
+    }
+
+    Rectangle {
         id: header
         width: parent.width
-        height: 56
-        color: "#121820"
+        height: 64
+        color: "#172F50"
+        border.width: 1
+        border.color: theme.stroke
         z: 10
 
         RowLayout {
@@ -57,29 +70,34 @@ Rectangle {
 
             SimpleButton {
                 label: "Back"
-                width: 80
+                variant: "ghost"
+                width: 86
                 onClicked: root.back()
             }
 
             Label {
                 text: root.pageTitle
-                color: "#F2F2F2"
-                font.pixelSize: 18
+                color: theme.textPrimary
+                font.pixelSize: 19
+                font.bold: true
+                font.family: theme.fontFamily
                 elide: Text.ElideRight
-                Layout.preferredWidth: 220
+                Layout.preferredWidth: 260
             }
 
             Item { Layout.fillWidth: true }
 
             SimpleButton {
-                label: "Home"
-                width: 84
+                label: "Center"
+                variant: "ghost"
+                width: 88
                 onClicked: root.reloadMap()
             }
 
             SimpleButton {
                 label: "-"
-                width: 44
+                variant: "ghost"
+                width: 46
                 onClicked: {
                     if (root.zoom > 3) {
                         root.zoom--
@@ -90,15 +108,17 @@ Rectangle {
 
             Label {
                 text: "Z " + root.zoom
-                color: "#DADADA"
+                color: theme.textSecondary
                 font.pixelSize: 15
-                Layout.minimumWidth: 38
+                font.family: theme.fontFamily
+                Layout.minimumWidth: 40
                 horizontalAlignment: Text.AlignHCenter
             }
 
             SimpleButton {
                 label: "+"
-                width: 44
+                variant: "ghost"
+                width: 46
                 onClicked: {
                     if (root.zoom < 18) {
                         root.zoom++
@@ -109,48 +129,65 @@ Rectangle {
 
             SimpleButton {
                 label: "Reload"
-                width: 84
+                variant: "accent"
+                width: 92
                 onClicked: root.reloadMap()
             }
         }
     }
 
-    WebEngineView {
-        id: web
+    Rectangle {
         anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        url: root.mapUrl(root.centerLat, root.centerLon, root.zoom)
+        anchors.margins: 10
+        radius: theme.radiusLg
+        color: theme.card
+        border.width: 1
+        border.color: theme.stroke
+        clip: true
 
-        settings.javascriptEnabled: true
-        settings.localStorageEnabled: true
-        settings.errorPageEnabled: true
-        settings.fullScreenSupportEnabled: true
-        settings.accelerated2dCanvasEnabled: true
-        settings.webGLEnabled: true
-        settings.localContentCanAccessRemoteUrls: true
+        WebEngineView {
+            id: web
+            anchors.fill: parent
+            url: root.mapUrl(root.centerLat, root.centerLon, root.zoom)
 
-        onLoadingChanged: function(loadRequest) {
-            if (loadRequest.errorCode !== 0) {
-                root.lastLoadError = "Map load error: " + loadRequest.errorCode + " " + loadRequest.errorString
-                console.log(root.lastLoadError)
-            } else if (!web.loading) {
-                root.lastLoadError = ""
+            settings.javascriptEnabled: true
+            settings.localStorageEnabled: true
+            settings.errorPageEnabled: true
+            settings.fullScreenSupportEnabled: true
+            settings.accelerated2dCanvasEnabled: true
+            settings.webGLEnabled: true
+            settings.localContentCanAccessRemoteUrls: true
+
+            onLoadingChanged: function(loadRequest) {
+                if (loadRequest.status === WebEngineView.LoadFailedStatus) {
+                    root.lastLoadError = "Map load error: " + loadRequest.errorCode + " " + loadRequest.errorString
+                    console.log(root.lastLoadError)
+                } else if (loadRequest.status === WebEngineView.LoadSucceededStatus) {
+                    root.lastLoadError = ""
+                }
             }
         }
     }
 
     Rectangle {
-        anchors.fill: web
-        color: "#0E1116"
+        anchors.top: header.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 10
+        radius: theme.radiusLg
+        color: "#0E1C32"
         visible: web.loading
         z: 20
         Text {
             anchors.centerIn: parent
             text: "Loading map..."
-            color: "#DADADA"
+            color: theme.textPrimary
             font.pixelSize: 20
+            font.family: theme.fontFamily
         }
     }
 
@@ -158,19 +195,20 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        height: 28
-        color: "#AA3A1010"
+        height: 32
+        color: "#AA4E1420"
         visible: root.lastLoadError.length > 0
         z: 30
         Text {
             anchors.fill: parent
-            anchors.leftMargin: 8
-            anchors.rightMargin: 8
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
             text: root.lastLoadError
-            color: "#FFB0B0"
+            color: theme.danger
             font.pixelSize: 12
+            font.family: theme.fontFamily
         }
     }
 }

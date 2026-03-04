@@ -6,18 +6,24 @@ Rectangle {
     property string placeholder: ""
     property alias value: input.text
 
-    color: "#0E1116"
-    radius: 6
+    Id5Theme { id: theme }
+
+    color: "#112845"
+    radius: theme.radiusSm
+    border.width: input.activeFocus ? 2 : 1
+    border.color: input.activeFocus ? theme.accentSoft : theme.stroke
     height: 40
     Layout.fillWidth: true
 
     TextInput {
         id: input
         anchors.fill: parent
-        anchors.margins: 8
-        color: "#F2F2F2"
+        anchors.margins: 9
+        color: theme.textPrimary
         font.pixelSize: 15
-        selectionColor: "#2B3645"
+        font.family: theme.fontFamily
+        selectionColor: "#2F568D"
+        selectedTextColor: "#FFFFFF"
     }
 
     Text {
@@ -25,8 +31,9 @@ Rectangle {
         anchors.leftMargin: 10
         anchors.verticalCenter: parent.verticalCenter
         text: inputWrap.placeholder
-        color: "#7A8699"
+        color: theme.textMuted
         visible: input.text.length === 0
         font.pixelSize: 15
+        font.family: theme.fontFamily
     }
 }

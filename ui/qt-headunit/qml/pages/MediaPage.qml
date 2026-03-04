@@ -6,7 +6,9 @@ import "../components"
 Rectangle {
     id: root
     anchors.fill: parent
-    color: "#0F0F0F"
+    color: "transparent"
+
+    Id5Theme { id: theme }
 
     signal back()
 
@@ -53,10 +55,20 @@ Rectangle {
     }
 
     Rectangle {
+        anchors.fill: parent
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: theme.bgTop }
+            GradientStop { position: 1.0; color: theme.bgBottom }
+        }
+    }
+
+    Rectangle {
         id: header
         width: parent.width
-        height: 56
-        color: "#1A1A1A"
+        height: 66
+        color: "#172F50"
+        border.width: 1
+        border.color: theme.stroke
         z: 10
 
         RowLayout {
@@ -67,16 +79,19 @@ Rectangle {
 
             SimpleButton {
                 label: "Back"
-                width: 80
+                variant: "ghost"
+                width: 84
                 onClicked: root.back()
             }
 
             Label {
                 text: root.pageTitle
-                color: "#F2F2F2"
-                font.pixelSize: 15
+                color: theme.textPrimary
+                font.pixelSize: 16
+                font.bold: true
+                font.family: theme.fontFamily
                 elide: Text.ElideRight
-                Layout.preferredWidth: 220
+                Layout.preferredWidth: 240
             }
 
             TextField {
@@ -84,31 +99,35 @@ Rectangle {
                 Layout.fillWidth: true
                 text: root.currentUrl
                 placeholderText: "YouTube URL or search text"
-                color: "#F2F2F2"
+                color: theme.textPrimary
+                font.family: theme.fontFamily
                 selectByMouse: true
                 onAccepted: root.openInput(text)
                 background: Rectangle {
-                    radius: 4
-                    color: "#111111"
+                    radius: theme.radiusSm
+                    color: "#10233F"
                     border.width: 1
-                    border.color: "#444444"
+                    border.color: addressField.activeFocus ? theme.accentSoft : theme.stroke
                 }
             }
 
             SimpleButton {
                 label: "Go"
-                width: 68
+                variant: "accent"
+                width: 66
                 onClicked: root.openInput(addressField.text)
             }
 
             SimpleButton {
                 label: "Home"
-                width: 82
+                variant: "ghost"
+                width: 80
                 onClicked: root.openInput("https://m.youtube.com")
             }
 
             SimpleButton {
                 label: "Prev"
+                variant: "ghost"
                 width: 72
                 enabled: root.canGoBack
                 onClicked: if (webLoader.item) webLoader.item.goBack()
@@ -116,6 +135,7 @@ Rectangle {
 
             SimpleButton {
                 label: "Next"
+                variant: "ghost"
                 width: 72
                 enabled: root.canGoForward
                 onClicked: if (webLoader.item) webLoader.item.goForward()
@@ -123,25 +143,36 @@ Rectangle {
 
             SimpleButton {
                 label: "Reload"
-                width: 82
+                variant: "ghost"
+                width: 86
                 enabled: root.webReady
                 onClicked: if (webLoader.item) webLoader.item.reloadPage()
             }
         }
     }
 
-    Loader {
-        id: webLoader
+    Rectangle {
         anchors.top: header.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        source: "MediaYoutubeWebView.qml"
-        onStatusChanged: {
-            if (status === Loader.Ready && item) {
-                item.loadUrl(root.currentUrl)
-            } else if (status === Loader.Error) {
-                root.pageTitle = "YouTube unavailable"
+        anchors.margins: 10
+        radius: theme.radiusLg
+        color: theme.card
+        border.width: 1
+        border.color: theme.stroke
+        clip: true
+
+        Loader {
+            id: webLoader
+            anchors.fill: parent
+            source: "MediaYoutubeWebView.qml"
+            onStatusChanged: {
+                if (status === Loader.Ready && item) {
+                    item.loadUrl(root.currentUrl)
+                } else if (status === Loader.Error) {
+                    root.pageTitle = "YouTube unavailable"
+                }
             }
         }
     }
@@ -153,21 +184,32 @@ Rectangle {
     }
 
     Rectangle {
-        anchors.fill: webLoader
-        color: "#000000"
+        anchors.top: header.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 10
+        radius: theme.radiusLg
+        color: "#0E1C32"
         visible: webLoader.status === Loader.Loading
         z: 20
         Text {
             anchors.centerIn: parent
             text: "Loading browser..."
-            color: "#CCCCCC"
+            color: theme.textPrimary
             font.pixelSize: 20
+            font.family: theme.fontFamily
         }
     }
 
     Rectangle {
-        anchors.fill: webLoader
-        color: "#0F0F0F"
+        anchors.top: header.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 10
+        radius: theme.radiusLg
+        color: "#0B182C"
         visible: webLoader.status === Loader.Error
         z: 20
 
@@ -178,20 +220,23 @@ Rectangle {
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Web engine module is not available."
-                color: "#E0E0E0"
+                color: theme.textPrimary
                 font.pixelSize: 22
+                font.family: theme.fontFamily
             }
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Install qtwebengine and rebuild the image."
-                color: "#B0B0B0"
+                color: theme.textSecondary
                 font.pixelSize: 16
+                font.family: theme.fontFamily
             }
             Text {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Also check device time and internet connection."
-                color: "#B0B0B0"
+                color: theme.textSecondary
                 font.pixelSize: 16
+                font.family: theme.fontFamily
             }
         }
     }

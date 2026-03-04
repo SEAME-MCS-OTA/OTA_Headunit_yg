@@ -5,8 +5,10 @@ import "../components"
 
 Rectangle {
     id: root
-    color: "#0E1116"
     anchors.fill: parent
+    color: "transparent"
+
+    Id5Theme { id: theme }
 
     property var otaState: ({})
     signal goToOta()
@@ -14,62 +16,158 @@ Rectangle {
     signal goToMedia()
 
     function vehicleName() {
-        var lv = root.otaState.logVehicle || root.otaState.log_vehicle || {}
-        var brand = lv.brand || ""
-        var series = lv.series || ""
-        var name = (brand + " " + series).trim()
-        return name.length > 0 ? name : "-"
+        return "Volkswagen ID.5"
     }
 
     function currentVersion() {
         var ota = root.otaState.ota || {}
-        return ota.current_version || root.otaState.currentVersion || "1.2.3"
+        var cur = ota.current_version || root.otaState.currentVersion || "-"
+        cur = String(cur).trim()
+        return (cur.length > 0 && cur !== "unknown") ? cur : "-"
     }
 
-    function phaseText() {
+    function currentPhase() {
         var ota = root.otaState.ota || {}
-        return ota.phase || root.otaState.phase || "-"
+        var ph = String(ota.phase || "-").trim()
+        return ph.length > 0 ? ph : "-"
     }
 
-    function eventText() {
+    function currentEvent() {
         var ota = root.otaState.ota || {}
-        return ota.event || root.otaState.event || "-"
+        var ev = String(ota.event || "-").trim()
+        return ev.length > 0 ? ev : "-"
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: theme.bgTop }
+            GradientStop { position: 1.0; color: theme.bgBottom }
+        }
+    }
+
+    Rectangle {
+        width: 340
+        height: 340
+        radius: 170
+        x: parent.width - width * 0.7
+        y: -height * 0.45
+        color: Qt.rgba(0.29, 0.64, 1.0, 0.18)
+    }
+
+    Rectangle {
+        width: 260
+        height: 260
+        radius: 130
+        x: -width * 0.35
+        y: parent.height - height * 0.6
+        color: Qt.rgba(0.45, 0.78, 1.0, 0.12)
     }
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 24
+        anchors.margins: 26
         spacing: 16
 
-        Label {
-            text: "IVI Head Unit"
-            color: "#F2F2F2"
+        Text {
+            text: "ID.5 Digital Cockpit"
+            color: theme.textPrimary
             font.pixelSize: 38
+            font.bold: true
+            font.family: theme.fontFamily
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        Text {
+            text: "Connected OTA Head Unit"
+            color: theme.textSecondary
+            font.pixelSize: 15
+            font.family: theme.fontFamily
             Layout.alignment: Qt.AlignHCenter
         }
 
         RowLayout {
             Layout.alignment: Qt.AlignHCenter
-            spacing: 12
-            SimpleButton { label: "Home"; enabled: false }
-            SimpleButton { label: "OTA Status"; onClicked: root.goToOta() }
+            spacing: 10
+            SimpleButton { label: "Home"; active: true }
+            SimpleButton { label: "OTA Status"; variant: "accent"; onClicked: root.goToOta() }
         }
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 110
-            radius: 10
-            color: "#1E2936"
+            Layout.preferredHeight: 128
+            radius: theme.radiusLg
+            color: theme.card
+            border.width: 1
+            border.color: theme.stroke
 
-            RowLayout {
+            Rectangle {
+                anchors.right: parent.right
+                anchors.top: parent.top
+                width: 220
+                height: 120
+                radius: theme.radiusLg
+                color: theme.card
+            }
+
+            ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 14
-                spacing: 20
+                anchors.margins: 16
+                spacing: 8
 
-                Text { text: "Vehicle: " + root.vehicleName(); color: "#DADADA"; font.pixelSize: 18 }
-                Text { text: "Version: " + root.currentVersion(); color: "#DADADA"; font.pixelSize: 18 }
-                Text { text: "Phase: " + root.phaseText(); color: "#DADADA"; font.pixelSize: 18 }
-                Text { text: "Event: " + root.eventText(); color: "#DADADA"; font.pixelSize: 18 }
+                RowLayout {
+                    spacing: 22
+                    Text {
+                        text: "Vehicle: " + root.vehicleName()
+                        color: theme.textPrimary
+                        font.pixelSize: 20
+                        font.family: theme.fontFamily
+                    }
+                    Text {
+                        text: "Version: " + root.currentVersion()
+                        color: theme.textPrimary
+                        font.pixelSize: 20
+                        font.family: theme.fontFamily
+                    }
+                }
+
+                RowLayout {
+                    spacing: 24
+                    Rectangle {
+                        radius: theme.radiusSm
+                        height: 42
+                        Layout.minimumWidth: 230
+                        Layout.preferredWidth: Math.max(230, phaseLabel.implicitWidth + 44)
+                        color: "#1E426A"
+                        border.width: 1
+                        border.color: theme.accentSoft
+                        Text {
+                            id: phaseLabel
+                            anchors.centerIn: parent
+                            text: "Phase: " + root.currentPhase()
+                            color: theme.accentSoft
+                            font.pixelSize: 13
+                            font.family: theme.fontFamily
+                        }
+                    }
+                    Rectangle {
+                        radius: theme.radiusSm
+                        height: 42
+                        Layout.minimumWidth: 210
+                        Layout.preferredWidth: Math.max(210, eventLabel.implicitWidth + 44)
+                        color: "#173D35"
+                        border.width: 1
+                        border.color: theme.ok
+                        Text {
+                            id: eventLabel
+                            anchors.centerIn: parent
+                            text: "Event: " + root.currentEvent()
+                            color: theme.ok
+                            font.pixelSize: 13
+                            font.family: theme.fontFamily
+                        }
+                    }
+                }
             }
         }
 
@@ -77,38 +175,73 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             columns: 2
-            columnSpacing: 16
-            rowSpacing: 16
+            rowSpacing: 14
+            columnSpacing: 14
 
             Rectangle {
-                color: "#1E2936"
-                radius: 10
+                color: theme.cardAlt
+                radius: theme.radiusLg
+                border.width: 1
+                border.color: theme.stroke
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Label { anchors.centerIn: parent; text: "Media"; color: "#DADADA"; font.pixelSize: 26 }
+                Text {
+                    anchors.centerIn: parent
+                    text: "Media"
+                    color: theme.textPrimary
+                    font.pixelSize: 28
+                    font.family: theme.fontFamily
+                }
                 MouseArea { anchors.fill: parent; onClicked: root.goToMedia() }
             }
+
             Rectangle {
-                color: "#1E2936"
-                radius: 10
+                color: theme.cardAlt
+                radius: theme.radiusLg
+                border.width: 1
+                border.color: theme.stroke
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Label { anchors.centerIn: parent; text: "Navigation"; color: "#DADADA"; font.pixelSize: 26 }
+                Text {
+                    anchors.centerIn: parent
+                    text: "Navigation"
+                    color: theme.textPrimary
+                    font.pixelSize: 28
+                    font.family: theme.fontFamily
+                }
                 MouseArea { anchors.fill: parent; onClicked: root.goToNav() }
             }
+
             Rectangle {
-                color: "#1E2936"
-                radius: 10
+                color: theme.cardSoft
+                radius: theme.radiusLg
+                border.width: 1
+                border.color: theme.stroke
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Label { anchors.centerIn: parent; text: "Phone"; color: "#DADADA"; font.pixelSize: 26 }
+                Text {
+                    anchors.centerIn: parent
+                    text: "Phone"
+                    color: theme.textSecondary
+                    font.pixelSize: 24
+                    font.family: theme.fontFamily
+                }
             }
+
             Rectangle {
-                color: "#1E2936"
-                radius: 10
+                color: theme.cardSoft
+                radius: theme.radiusLg
+                border.width: 1
+                border.color: theme.stroke
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Label { anchors.centerIn: parent; text: "Settings"; color: "#DADADA"; font.pixelSize: 26 }
+                Text {
+                    anchors.centerIn: parent
+                    text: "Settings"
+                    color: theme.textSecondary
+                    font.pixelSize: 24
+                    font.family: theme.fontFamily
+                }
             }
         }
     }

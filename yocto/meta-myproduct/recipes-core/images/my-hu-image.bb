@@ -28,6 +28,7 @@ IMAGE_INSTALL:append = " \
     weston-service \
     seatd \
     rauc \
+    ota-backend \
     openssh \
     headunit-ui \
     myproduct-systemd-preset \
@@ -50,5 +51,5 @@ IMAGE_FEATURES += "splash"
 
 EXTRA_IMAGE_FEATURES += "debug-tweaks"
 
-IMAGE_FSTYPES:append = " wic.gz"
+IMAGE_FSTYPES:append = " ext4 wic.gz"
 WKS_FILE = "my-hu-image.wks"

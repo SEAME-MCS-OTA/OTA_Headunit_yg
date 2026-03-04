@@ -4,6 +4,7 @@
 _cache/
 _build/
 out/
+.dashboard-3001.pid
 
 # Yocto generated state
 yocto/build/
@@ -26,6 +27,14 @@ Thumbs.db
 .venv/
 venv/
 node_modules/
+__pycache__/
+*.pyc
+.env
+OTA_GH/.env
+OTA_GH/client/.env
+OTA_GH/dashboard/.env
+OTA_VLM/ota-dashboard/backend/.env
+OTA_VLM/ota-dashboard/frontend/.env
 
 # Image outputs
 *.wic
@@ -34,3 +43,22 @@ node_modules/
 *.ext4
 *.manifest
 *.bmap
+
+# Runtime/generated assets in nested apps
+OTA_GH/firmware_files/
+OTA_GH/build_firmware/
+OTA_GH/scripts/firmware_files/
+OTA_GH/dashboard/dist/
+OTA_GH/dashboard/.vite/
+OTA_GH/server/instance/
+OTA_VLM/ota-dashboard/frontend/dist/
+OTA_VLM/ota-dashboard/backend/dist/
+OTA_VLM/analysis_output/
+OTA_VLM/backups/
+OTA_VLM/image/
+OTA_VLM/Email System/email_result.jsonl
+OTA_VLM/failed case/*/dummy.jsonl
+OTA_VLM/failed case/*/result.jsonl
+
+# Local signing keys (generated locally)
+keys/

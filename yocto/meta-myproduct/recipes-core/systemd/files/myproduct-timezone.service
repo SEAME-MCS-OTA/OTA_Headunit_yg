@@ -1,0 +1,11 @@
+[Unit]
+Description=Apply myproduct timezone before UI/network services
+After=local-fs.target
+Before=systemd-timesyncd.service headunit.service ota-backend.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/myproduct-timezone.sh
+
+[Install]
+WantedBy=multi-user.target

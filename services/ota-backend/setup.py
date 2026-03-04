@@ -6,10 +6,9 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        "fastapi",
-        "uvicorn[standard]",
+        "flask",
         "requests",
-        "pydantic",
+        "paho-mqtt",
     ],
     data_files=[
         ("/usr/lib/systemd/system", ["systemd/ota-backend.service"]),

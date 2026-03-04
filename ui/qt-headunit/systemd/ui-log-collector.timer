@@ -2,8 +2,11 @@
 Description=Periodic UI bringup log collection
 
 [Timer]
-OnBootSec=25s
-OnUnitActiveSec=90s
+OnBootSec=12s
+OnUnitActiveSec=60s
+Persistent=true
+AccuracySec=10s
+RandomizedDelaySec=0
 Unit=ui-log-collector.service
 
 [Install]

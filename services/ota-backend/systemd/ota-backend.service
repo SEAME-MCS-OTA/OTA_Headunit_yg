@@ -1,13 +1,15 @@
 [Unit]
 Description=OTA Backend Service
-After=network-online.target
-Wants=network-online.target
+After=local-fs.target network.target
+Wants=network.target
 
 [Service]
 Type=simple
 Environment=PYTHONUNBUFFERED=1
-ExecStartPre=/bin/mkdir -p /data/log/ota /data/ota
-ExecStart=/usr/bin/ota-backend
+Environment=OTA_BACKEND_CONFIG=/data/etc/ota-backend/config.json
+ExecStartPre=/bin/mkdir -p /data/log/ota /data/log/ui /data/ota /data/etc/ota-backend
+ExecStartPre=/usr/sbin/ota-backend-prepare-config.sh
+ExecStart=/bin/sh -c '/usr/bin/ota-backend >>/data/log/ui/ota-backend-service.log 2>&1'
 Restart=on-failure
 RestartSec=3
 

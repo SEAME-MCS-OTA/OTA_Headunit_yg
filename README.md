@@ -102,8 +102,9 @@ flowchart LR
 ### 3.1-2 Yocto Head Unit Image System Architecture
 
 ```mermaid
-flowchart TB
+flowchart LR
   subgraph BOOT["Boot Chain (on SD)"]
+    direction TB
     UBOOT["U-Boot / Bootloader"]
     KERNEL["Linux Kernel + DTB"]
     ROOTFS["RootFS A/B (RAUC slots)"]
@@ -113,6 +114,7 @@ flowchart TB
   end
 
   subgraph BASE["Yocto Base OS Layer"]
+    direction TB
     SYS["systemd (PID 1)"]
     NET["Network stack (wlan0, DHCP, DNS)"]
     DRM["DRM/KMS + vc4 GPU driver"]
@@ -121,6 +123,7 @@ flowchart TB
   end
 
   subgraph APP["Head Unit Runtime Layer"]
+    direction TB
     TZ["myproduct-timezone.service"]
     MID["persist-machine-id.service"]
     WESTON["weston.service (Wayland compositor)"]
@@ -134,6 +137,8 @@ flowchart TB
   end
 
   ROOTFS --> SYS
+  SYS --> WESTON
+  SYS --> OTA
   SYS --> TZ
   SYS --> MID
 ```

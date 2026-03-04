@@ -99,7 +99,53 @@ flowchart LR
   GH --> VLM
 ```
 
-### 3.1-2 Runtime OTA Control/Data Flow
+### 3.1-2 Yocto Head Unit Image System Architecture
+
+```mermaid
+flowchart TB
+  subgraph BOOT["Boot Chain (on SD)"]
+    UBOOT["U-Boot / Bootloader"]
+    KERNEL["Linux Kernel + DTB"]
+    ROOTFS["RootFS A/B (RAUC slots)"]
+    DATA["Persistent /data partition"]
+    UBOOT --> KERNEL --> ROOTFS
+    ROOTFS --- DATA
+  end
+
+  subgraph BASE["Yocto Base OS Layer"]
+    SYS["systemd (PID 1)"]
+    NET["Network stack (wlan0, DHCP, DNS)"]
+    DRM["DRM/KMS + vc4 GPU driver"]
+    SYS --> NET
+    SYS --> DRM
+  end
+
+  subgraph APP["Head Unit Runtime Layer"]
+    TZ["myproduct-timezone.service"]
+    MID["persist-machine-id.service"]
+    WESTON["weston.service (Wayland compositor)"]
+    HU["headunit.service (Qt/QML UI)"]
+    OTA["ota-backend.service (:8080)"]
+    RAUC["rauc + slot scripts"]
+    TZ --> WESTON
+    MID --> OTA
+    WESTON --> HU
+    OTA --> RAUC
+  end
+
+  ROOTFS --> SYS
+  SYS --> TZ
+  SYS --> MID
+```
+
+이미지 내부 기준(디바이스 관점):
+
+- 부팅은 `U-Boot -> Kernel -> rootfs(A/B)` 순서로 시작한다.
+- 런타임 핵심은 `systemd`이며, `weston -> headunit(Qt)` 체인으로 화면이 올라온다.
+- OTA는 `ota-backend.service`가 `rauc`를 호출해 **inactive slot**에 설치한다.
+- `/data` 파티션은 슬롯 전환과 무관하게 유지되어 로그/상태/설정을 보존한다.
+
+### 3.1-3 Runtime OTA Control/Data Flow
 
 ```mermaid
 sequenceDiagram
@@ -121,7 +167,7 @@ sequenceDiagram
   S->>M: ingest normalized result log
 ```
 
-### 3.1-3 Device A/B Slot Model
+### 3.1-4 Device A/B Slot Model
 
 ```mermaid
 flowchart TB

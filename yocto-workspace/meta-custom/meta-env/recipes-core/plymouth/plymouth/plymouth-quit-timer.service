@@ -1,0 +1,18 @@
+[Unit]
+Description=Plymouth Quit Timer (7.2 seconds — one 7s cycle + minimal margin)
+After=plymouth-start.service
+Before=display-manager.service weston.service
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+# Animation: 210 frames @ 30fps = 7.0s.
+# Keep only a minimal margin to reduce post-animation wait.
+# Fail-tolerant chain: each step is independent so quit always runs
+# even if deactivate fails. This ensures DRM master is released.
+ExecStart=/bin/sh -c 'sleep 7.2; /usr/bin/plymouth deactivate || true; /usr/bin/plymouth quit || true'
+RemainAfterExit=yes
+TimeoutStartSec=15
+
+[Install]
+WantedBy=sysinit.target

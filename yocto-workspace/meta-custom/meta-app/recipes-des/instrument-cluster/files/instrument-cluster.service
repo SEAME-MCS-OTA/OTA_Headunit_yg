@@ -1,0 +1,28 @@
+[Unit]
+Description=Instrument Cluster Application (Minimal - Dual Display)
+After=weston.service
+Requires=weston.service
+
+[Service]
+Type=simple
+Environment=QT_QPA_PLATFORM=wayland
+Environment=WAYLAND_DISPLAY=wayland-0
+Environment=XDG_RUNTIME_DIR=/run
+Environment=QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+Environment=QT_WAYLAND_FORCE_FULLSCREEN=1
+Environment=QT_WAYLAND_FULLSCREEN_OUTPUT=HDMI-A-2
+
+# Wait for Wayland socket instead of fixed sleep to reduce unnecessary boot delay
+ExecStartPre=/bin/sh -c 'timeout 3 sh -c "while [ ! -S /run/wayland-0 ]; do sleep 0.05; done"'
+
+ExecStart=/usr/bin/appIC
+Restart=on-failure
+RestartSec=2
+User=root
+Group=root
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=15
+
+[Install]
+WantedBy=graphical.target
